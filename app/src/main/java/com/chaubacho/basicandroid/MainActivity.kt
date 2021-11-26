@@ -1,6 +1,5 @@
 package com.chaubacho.basicandroid
 
-import android.media.MediaPlayer
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity

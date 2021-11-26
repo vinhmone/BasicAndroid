@@ -7,7 +7,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import androidx.fragment.app.Fragment
 
 class FirstFragment : Fragment() {
@@ -25,74 +24,46 @@ class FirstFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         Log.d(TAG, "onCreateView: Called")
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_first, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         Log.d(TAG, "onViewCreated: Called")
         super.onViewCreated(view, savedInstanceState)
-        view.findViewById<Button>(R.id.buttonSwitchToSecond).setOnClickListener {
-            activity
-                ?.supportFragmentManager
-                ?.beginTransaction()
-                ?.addToBackStack(null)
-                ?.replace(R.id.fragmentContainer, SecondFragment())
-                ?.commit()
-        }
 
-        savedInstanceState?.let {
-            position = it.getInt("position")
-            Log.d(TAG, "onCreate: $position")
-        }
-
-        mediaPlayer = MediaPlayer()
+        if (mediaPlayer == null ) mediaPlayer = MediaPlayer()
         val uri = Uri.parse("android.resource://" + activity?.packageName + "/" + R.raw.buocquanhau)
-        try {
-            mediaPlayer?.let {
-                context?.let { c -> it.setDataSource(c, uri) }
-                it.prepare()
-                Log.d(TAG, "mediaPlayer: Started")
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
+        mediaPlayer?.let {
+            context?.let { c -> it.setDataSource(c, uri) }
+            it.prepare()
+            Log.d(TAG, "mediaPlayer: Started")
         }
     }
 
     override fun onStart() {
-        Log.d(TAG, "onStart: Called")
+        Log.d(TAG, "onStart: Called________________________")
         super.onStart()
-        mediaPlayer?.let {
-            if (!it.isPlaying) {
-                if (position == 0) {
-                    it.start()
-                } else {
-                    it.seekTo(position)
-                    it.start()
-                }
-            } else {
-                Log.d(TAG, "onStart: Media playing")
-            }
+        mediaPlayer?.apply {
+            start()
+            seekTo(position)
+        }
+    }
+
+    override fun onViewStateRestored(savedInstanceState: Bundle?) {
+        super.onViewStateRestored(savedInstanceState)
+        savedInstanceState?.let {
+            position = it.getInt("position")
+            Log.d(TAG, "onCreate: $position")
         }
     }
 
     override fun onResume() {
         Log.d(TAG, "onResume: Called")
         super.onResume()
-        mediaPlayer?.let {
-            if (it.isPlaying) {
-                Log.d(TAG, "onStart: Media playing")
-            }
-        }
     }
 
     override fun onPause() {
         Log.d(TAG, "onPause: Called")
-        mediaPlayer?.let {
-            position = it.currentPosition
-            Log.d(TAG, "onPause: $position")
-            it.pause()
-        }
         super.onPause()
     }
 
@@ -104,6 +75,7 @@ class FirstFragment : Fragment() {
     override fun onSaveInstanceState(outState: Bundle) {
         mediaPlayer?.let {
             position = it.currentPosition
+            Log.d(TAG, "onSaveInstanceState: $position")
             outState.putInt("position", position)
         }
         super.onSaveInstanceState(outState)
@@ -111,7 +83,7 @@ class FirstFragment : Fragment() {
 
     override fun onDestroy() {
         Log.d(TAG, "onDestroy: Called")
-        mediaPlayer?.stop()
+        mediaPlayer?.release()
         mediaPlayer = null
         super.onDestroy()
     }

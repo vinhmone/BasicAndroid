@@ -4,13 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".SecondActivity">
 
     <Button
-        android:id="@+id/buttonSwitchToSecond"
+        android:id="@+id/buttonBackToMain"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:text="To Second Activity"
+        android:text="To Main Activity"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintDimensionRatio="3:1"
         app:layout_constraintEnd_toEndOf="parent"

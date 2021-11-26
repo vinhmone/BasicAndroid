@@ -22,6 +22,10 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(this, SecondActivity::class.java)
             startActivity(intent)
         }
+        savedInstanceState?.let {
+            position = it.getInt("position")
+            Log.d(TAG, "onCreate: $position")
+        }
 
         mediaPlayer = MediaPlayer()
         val uri = Uri.parse("android.resource://" + packageName + "/" + R.raw.buocquanhau)
@@ -29,7 +33,7 @@ class MainActivity : AppCompatActivity() {
             mediaPlayer?.let {
                 it.setDataSource(applicationContext, uri)
                 it.prepare()
-                Log.d(TAG, "onCreate: Started")
+                Log.d(TAG, "mediaPlayer: Started")
             }
         } catch (e: Exception) {
             e.printStackTrace()
@@ -68,6 +72,7 @@ class MainActivity : AppCompatActivity() {
         Log.d(TAG, "onPause: Called")
         mediaPlayer?.let {
             position = it.currentPosition
+            Log.d(TAG, "onPause: $position")
             it.pause()
         }
         super.onPause()
@@ -76,6 +81,14 @@ class MainActivity : AppCompatActivity() {
     override fun onStop() {
         Log.d(TAG, "onStop: Called")
         super.onStop()
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        mediaPlayer?.let {
+            position = it.currentPosition
+            outState.putInt("position", position)
+        }
+        super.onSaveInstanceState(outState)
     }
 
     override fun onDestroy() {

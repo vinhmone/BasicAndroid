@@ -3,6 +3,8 @@ package com.chaubacho.basicandroid
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 
 class MainActivity : AppCompatActivity() {
 
@@ -11,12 +13,13 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        supportFragmentManager
-            .beginTransaction()
-            .addToBackStack("first")
-            .replace(R.id.fragmentContainer, FirstFragment())
-            .commit()
+        val recyclerView = findViewById<RecyclerView>(R.id.recyclerView)
+        val list = listOf("Tran", "Dinh", "Vinh")
+        val adapter = Adapter(list)
+        val manager = StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL)
 
+        recyclerView.layoutManager = manager
+        recyclerView.adapter = adapter
     }
 
     override fun onStart() {
